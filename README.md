@@ -1,2 +1,2 @@
 # EveryUpdateImshuffling
-Shuffles Jira Kanban user lists
+Shuffles Jira rapidView user lists
