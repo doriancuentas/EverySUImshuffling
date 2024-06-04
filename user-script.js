@@ -108,24 +108,29 @@
             // Sort the children based on the order
             sortedChildren.sort((a, b) => a.order - b.order);
 
+            // Get the height of the root element
+            const rootHeight = rootElement.clientHeight;
+
             // Apply animations before reordering
             children.forEach(child => {
-                child.style.transition = 'transform 1s ease-in-out';
-                child.style.transform = `translateY(${Math.floor(Math.random() * 200) - 100}px)`;
+                child.style.transition = 'transform 0.3s ease-in-out'; // Make it faster
+                const bounceHeight = Math.random() * rootHeight - rootHeight / 2;
+                child.style.transform = `translateY(${bounceHeight}px)`;
             });
 
-            // After the animation duration, actually reorder the elements
+            // Reset the transform after a longer duration for a smooth bounce back
             setTimeout(() => {
                 rootElement.innerHTML = '';
                 sortedChildren.forEach(item => {
-                    item.child.style.transition = 'transform 0.6s ease-in-out';
+                    item.child.style.transition = 'transform 2.0s cubic-bezier(0.68, -0.55, 0.27, 1.55)'; // Longer lasting and with bounce effect
                     item.child.style.transform = 'translateY(0)';
                     rootElement.appendChild(item.child);
                 });
-            }, 1000);
+            }, 300); // slightly less than the transition duration for first animation
         }
 
-        function resetShuffle(){
+
+        function resetShuffle() {
             new_shuffle = shuffleArray(retrieveDataFromSessionStorage('shuffled_team_order'));
             storeDataInSessionStorage('shuffled_team_order', new_shuffle);
             applyOrderFromJsonList(document.getElementById('ghx-pool'), '.ghx-heading>span:first-of-type', new_shuffle);
