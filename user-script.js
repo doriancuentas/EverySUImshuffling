@@ -125,6 +125,12 @@
             }, 1000);
         }
 
+        function resetShuffle(){
+            new_shuffle = shuffleArray(retrieveDataFromSessionStorage('shuffled_team_order'));
+            storeDataInSessionStorage('shuffled_team_order', new_shuffle);
+            applyOrderFromJsonList(document.getElementById('ghx-pool'), '.ghx-heading>span:first-of-type', new_shuffle);
+        }
+
         function mainReorder() {
             console.debug("Getting data from hidden element")
             let stored_value = retrieveDataFromSessionStorage('shuffled_team_order');
@@ -183,6 +189,10 @@
         observer.observe(rootElement, config);
 
         mainReorder();
+    });
+
+    GM_registerMenuCommand("Reset shuffle", () => {
+        resetShuffle();
     });
 
 })();
