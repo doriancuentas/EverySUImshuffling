@@ -184,7 +184,7 @@
 
         // Create and configure the observer
         const observer = new MutationObserver(observerCallback);
-        const config = { childList: true, subtree: false }; // Watch only direct children
+        const config = { childList: true, subtree: true };
         const rootElement = document.getElementById('ghx-pool');
         observer.observe(rootElement, config);
 
