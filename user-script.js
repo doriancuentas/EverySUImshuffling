@@ -1,7 +1,14 @@
 // ==UserScript==
 // @name         Jira Rapid Board Shuffle Team
-// @match        https://jira.pinadmin.com/secure/RapidBoard.jspa?rapidView=2292&projectKey=ITEDP*
+// @namespace    https://github.com/doriancuentas
+// @version      0.2
+// @description  A script to shuffle the Jira Rapid Board team members for fun!
+// @author       Dorian Cuentas
+// @match        https://*jira*/*/RapidBoard.jspa?rapidView*
 // @grant        GM_registerMenuCommand
+// @homepage     https://github.com/doriancuentas/EverySUImshuffling
+// @supportURL   https://github.com/doriancuentas/EverySUImshuffling/issues
+// @run-at       document-end
 // ==/UserScript==
 
 (function () {
@@ -152,10 +159,12 @@
 
 
     GM_registerMenuCommand("Shuffle team v0.2", () => {
+
         const observer = new MutationObserver(observerCallback);
         const config = { childList: true, subtree: true };
         const rootElement = document.getElementById('ghx-pool');
         observer.observe(rootElement, config);
+
         mainReorder();
     });
 
