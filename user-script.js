@@ -7,24 +7,6 @@
 (function () {
     'use strict';
 
-    GM_registerMenuCommand("Shuffle team", () => {
-        const ghxPool = document.getElementById('ghx-pool');
-        const children = Array.from(ghxPool.children);
-        children.forEach(child => {
-            child.style.transition = 'transform 1s ease-in-out';
-            child.style.transform = `translateY(${Math.floor(Math.random() * 200) - 100}px`;
-        });
-        setTimeout(() => {
-            ghxPool.innerHTML = '';
-            children.sort(() => Math.random() - 0.5);
-            children.forEach((child, index) => {
-                child.style.transition = 'transform 0.6s ease-in-out';
-                child.style.transform = 'translateY(0)';
-                ghxPool.appendChild(child);
-            });
-        }, 1000);
-    });
-
     function initJiraShuffler() {
         function getChildrenAttributes(rootElement, selector) {
             const children = Array.from(rootElement.children);
@@ -60,25 +42,6 @@
         function retrieveDataFromSessionStorage(key) {
             const jsonString = sessionStorage.getItem(key);
             return jsonString ? JSON.parse(jsonString) : null;
-        }
-
-        function storeDataInHiddenElement(data) {
-            const jsonString = JSON.stringify(data);
-            const hiddenDiv = document.createElement('div');
-            hiddenDiv.id = 'hidden-data-storage';
-            hiddenDiv.style.display = 'none';
-            hiddenDiv.textContent = jsonString;
-            document.body.appendChild(hiddenDiv);
-            return hiddenDiv;
-        }
-
-
-        function retrieveDataFromHiddenElement() {
-            const hiddenDiv = document.getElementById('hidden-data-storage');
-            if (hiddenDiv) {
-                return JSON.parse(hiddenDiv.textContent);
-            }
-            return null;
         }
 
 
@@ -122,11 +85,11 @@
             setTimeout(() => {
                 rootElement.innerHTML = '';
                 sortedChildren.forEach(item => {
-                    item.child.style.transition = 'transform 2.0s cubic-bezier(0.68, -0.55, 0.27, 1.55)'; // Longer lasting and with bounce effect
+                    item.child.style.transition = 'transform 2.0s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
                     item.child.style.transform = 'translateY(0)';
                     rootElement.appendChild(item.child);
                 });
-            }, 300); // slightly less than the transition duration for first animation
+            }, 300);
         }
 
 
@@ -134,6 +97,10 @@
             new_shuffle = shuffleArray(retrieveDataFromSessionStorage('shuffled_team_order'));
             storeDataInSessionStorage('shuffled_team_order', new_shuffle);
             applyOrderFromJsonList(document.getElementById('ghx-pool'), '.ghx-heading>span:first-of-type', new_shuffle);
+        }
+
+        function clearShuffleData() {
+            storeDataInSessionStorage('shuffled_team_order', []);
         }
 
         function mainReorder() {
@@ -154,7 +121,6 @@
             applyOrderFromJsonList(root_element, team_member_name_selector, stored_value);
         }
 
-        // Function to handle mutations
         const observerCallback = (mutationsList, observer) => {
             console.debug('Mutation callback triggered');
             for (const mutation of mutationsList) {
@@ -185,14 +151,11 @@
     document.body.appendChild(script);
 
 
-    GM_registerMenuCommand("Shuffle team improved", () => {
-
-        // Create and configure the observer
+    GM_registerMenuCommand("Shuffle team v0.2", () => {
         const observer = new MutationObserver(observerCallback);
         const config = { childList: true, subtree: true };
         const rootElement = document.getElementById('ghx-pool');
         observer.observe(rootElement, config);
-
         mainReorder();
     });
 
@@ -200,4 +163,7 @@
         resetShuffle();
     });
 
+    GM_registerMenuCommand("Clear shuffle data", () => {
+        clearShuffleData();
+    });
 })();
